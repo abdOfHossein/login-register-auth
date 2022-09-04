@@ -15,6 +15,8 @@ export class UserService {
 
   async register(createUserDto: CreateUserDto) {
     try {
+      console.log(createUserDto);
+      
       const user = await this.dataSource.manager
         .createQueryBuilder(User, 'user')
         .insert()

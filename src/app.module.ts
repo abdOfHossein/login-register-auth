@@ -4,25 +4,21 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CommonTypeOrmModuleOptions } from './config/database/common.pg';
-import { UserModule } from './user/user.module';
 import { ProfileModule } from './profile/profile.module';
-import { User } from './user/entities/user.entity';
+import { RedisModule } from './redis/redis.module';
+import { UserModule } from './user/user.module';
+import { TwilioModule } from 'nestjs-twilio';
+import { SmsModule } from './sms/sms.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(CommonTypeOrmModuleOptions),
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   port: 5432,
-    //   username: 'postgres',
-    //   password: '774936188',
-    //   database: 'postgres',
-    //   entities: [__dirname + '/user/entities/*.entity.js'],
-    //   synchronize: true,
-    // }),
+   
     UserModule,
     AuthModule,
     ProfileModule,
+    RedisModule.forRoot('127.0.0.1'),
+    SmsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

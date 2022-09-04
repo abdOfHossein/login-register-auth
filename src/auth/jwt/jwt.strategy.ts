@@ -3,11 +3,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { join } from 'path';
-import { User } from '../user/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 import { Repository } from 'typeorm';
 
 const config = require('dotenv').config(join(__dirname, '../../.env'));
-const secret = process.env.JWT_SECRET_KEY;
+const secretOrKey = process.env.JWT_SECRET_KEY;
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -18,12 +18,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: secret,
+      secretOrKey,
     });
   }
 
   async validate(payload: any) {
     try {
+     
       const user = await this.userRepository.findOne({
         where: { username: payload.username },
       });

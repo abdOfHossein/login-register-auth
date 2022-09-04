@@ -9,7 +9,7 @@ async function bootstrap() {
   setupSwagger(app);
   app.useGlobalPipes(
     new ValidationPipe({
-      disableErrorMessages: true,
+      whitelist: true,
     }),
   );
   const port = process.env.PORT || 3000;

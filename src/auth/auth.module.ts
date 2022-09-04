@@ -3,17 +3,19 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { User } from '../user/entities/user.entity'; 
+import { RedisModule } from '../redis/redis.module';
+import { User } from '../user/entities/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './jwt.strategy';
-import { LocalStrategy } from './local.strategy';
+import { JwtStrategy } from './jwt/jwt.strategy';
+import { LocalStrategy } from './jwt/local.strategy';
 
 const config = require('dotenv').config(join(__dirname, '../../.env'));
 const secret = process.env.JWT_SECRET_KEY;
 
 @Module({
   imports: [
+    RedisModule.forRoot('127.0.0.1'),
     PassportModule,
     JwtModule.register({
       secret,

@@ -1,25 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../user/entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { RedisService } from '../redis/redis.service';
+import { DataSource, Repository } from 'typeorm';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(
+  constructor( 
+    private redisService: RedisService,
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private userRepository:Repository<User>,
     private dataSource: DataSource,
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
+  async validateUser(id: string, username: string): Promise<any> {
     try {
-      const user: any = await this.userRepository.findOne({
-        where: { username: username },
+      const user: any = await this.userRepository.findBy({
+        username,
       });
 
-      if (user && user.password == password) {
+      if (user) {
         return user;
       }
       return null;
@@ -33,10 +35,11 @@ export class AuthService {
       .createQueryBuilder(User, 'user')
       .where('user.username = :username', { username: userInfo.username })
       .getOne();
-    console.log(user);
     const payload = { id: user.id, sub: user.username };
+    const access_token = this.jwtService.sign(payload);
+    this.redisService.setKey('jwtToken', access_token, 180);
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
     };
   }
 }
