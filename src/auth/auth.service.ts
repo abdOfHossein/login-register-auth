@@ -1,18 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RedisService } from '../redis/redis.service';
+import { EmailService } from '../email/email.service';
 import { DataSource, Repository } from 'typeorm';
+import { RedisService } from '../redis/redis.service';
+import { SmsService } from '../sms/service/sms.service';
 import { User } from '../user/entities/user.entity';
+import { EmailDto } from './dto/email.dto';
+import { MobileDto } from './dto/mobile.dto';
 
 @Injectable()
 export class AuthService {
-  constructor( 
+  constructor(
     private redisService: RedisService,
     @InjectRepository(User)
-    private userRepository:Repository<User>,
+    private userRepository: Repository<User>,
     private dataSource: DataSource,
     private jwtService: JwtService,
+    private smsService: SmsService,
+    private emailService: EmailService,
   ) {}
 
   async validateUser(id: string, username: string): Promise<any> {
@@ -42,4 +48,23 @@ export class AuthService {
       access_token,
     };
   }
+
+  async forgetPassSendMobile(mobileDto: MobileDto) {
+    try {
+      return await this.smsService.sendSmsPrepareForget(mobileDto.mobile);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  // async forgetPassSendEmail(emailDto: EmailDto) {
+  //   try {
+  //     return this.emailService.sendPassToEmail(emailDto.email);
+  //   } catch (e) {
+  //     console.log('here');
+  //     console.log(e);
+  //     throw e;
+  //   }
+  // }
 }

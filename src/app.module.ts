@@ -9,6 +9,11 @@ import { RedisModule } from './redis/redis.module';
 import { UserModule } from './user/user.module';
 import { TwilioModule } from 'nestjs-twilio';
 import { SmsModule } from './sms/sms.module';
+import { EmailModule } from './email/email.module';
+import { ProductModule } from './product/product.module';
+import { PckgModule } from './pckg/pckg.module';
+import { PckgVersionModule } from './pckg-version/pckg-version.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -19,6 +24,11 @@ import { SmsModule } from './sms/sms.module';
     ProfileModule,
     RedisModule.forRoot('127.0.0.1'),
     SmsModule,
+    EmailModule,
+    ProductModule,
+    PckgModule,
+    PckgVersionModule,
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

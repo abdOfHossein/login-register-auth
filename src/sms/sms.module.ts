@@ -1,16 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TwilioModule } from 'nestjs-twilio';
-import { SmsController } from './sms.controller';
-import { SmsService } from './sms.service';
+import { SmsService } from './service/sms.service';
+import { HistoryModule } from "../history/history.module";
+import { RedisModule } from "../redis/redis.module";
 
 @Module({
-  imports: [
-    TwilioModule.forRoot({
-      accountSid: process.env.TWILIO_ACCOUNT_SID,
-      authToken: process.env.TWILIO_AUTH_TOKEN,
-    }),
-  ],
-  controllers: [SmsController],
-  providers: [SmsService],
+  imports :[ HistoryModule ,
+  RedisModule.forRoot("127.0.0.1" , 6379)] ,
+  providers: [SmsService] ,
+  exports: [SmsService]
 })
 export class SmsModule {}

@@ -24,9 +24,6 @@ export class UserService {
         .values(createUserDto)
         .execute();
       console.log(user);
-      // const user = await this.userRepo.create();
-      // user.firstName = createUserDto.firstName;
-      // await this.userRepo.save(user);
       return 'user created successfully';
     } catch (e) {
       console.log(e);
