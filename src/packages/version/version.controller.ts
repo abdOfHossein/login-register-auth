@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Patch,
-  Post,
+  Post
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateVersionDto } from './dto/create-version.dto';
@@ -17,9 +17,12 @@ import { VersionService } from './version.service';
 export class VersionController {
   constructor(private readonly versionService: VersionService) {}
 
-  @Post()
-  create(@Body() createVersionDto: CreateVersionDto) {
-    return this.versionService.create(createVersionDto);
+  @Post(':pckg_version_id')
+  async create(
+    @Param('pckg_version_id') pckg_version_id: string,
+    @Body() createVersionDto: CreateVersionDto,
+  ) {
+    return 'await this.versionService.create(pckg_version_id, createVersionDto)';
   }
 
   @Get()

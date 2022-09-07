@@ -1,19 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Post,
+  Put,
 } from '@nestjs/common';
-import { PckgService } from './pckg.service';
+import { ApiTags } from '@nestjs/swagger';
 import { CreatePckgDto } from './dto/create-pckg.dto';
-import { UpdatePckgDto } from './dto/update-pckg.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../auth/jwt/jwt-auth.guard';
-
+import { FindPckgDto } from './dto/find.pckg.dto';
+import { PckgEntity } from './entities/pckg.entity';
+import { PckgService } from './pckg.service';
 
 @ApiTags('packages/pckg')
 @Controller('pckg')
@@ -22,10 +20,10 @@ export class PckgController {
 
   @Post(':pckg_version_id')
   create(
-    @Param('pckg_version_id') pckg_version_id: string,
+    @Param() Param: FindPckgDto,
     @Body() createPckgDto: CreatePckgDto,
   ) {
-    return this.pckgService.create(createPckgDto,pckg_version_id);
+    return this.pckgService.create(createPckgDto, Param);
   }
 
   @Get()
@@ -34,17 +32,17 @@ export class PckgController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pckgService.findOne(+id);
+  findOne(@Param() Param: FindPckgDto) {
+    return this.pckgService.findOne(Param);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePckgDto: UpdatePckgDto) {
-    return this.pckgService.update(+id, updatePckgDto);
+  @Put()
+  update(pckgEntity: PckgEntity, createPckgDto: CreatePckgDto) {
+    return this.pckgService.update(pckgEntity, createPckgDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pckgService.remove(+id);
+  @Delete()
+  delete(@Body() pckgEntity: PckgEntity) {
+    return this.pckgService.delete(pckgEntity);
   }
 }
