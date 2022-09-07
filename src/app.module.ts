@@ -6,15 +6,15 @@ import { AuthModule } from './auth/auth.module';
 import { CommonTypeOrmModuleOptions } from './config/database/common.pg';
 import { EmailModule } from './email/email.module';
 import { GroupModule } from './packages/group/group.module';
-import { PckgVersionModule } from './packages/pckg-version/pckg-version.module';
-import { PckgModule } from './packages/pckg/pckg.module';
-import { ProdPackgVModule } from './packages/prod-packg-v/prod-packg-v.module';
-import { ProductModule } from './packages/product/product.module';
-import { VersionModule } from './packages/version/version.module';
+import { PckgModule } from './packages/pckg.module';
+import { ProdPackgVModule } from './packages/prod-packg-v.module';
+import { ProductModule } from './packages/modules/product.module';
+import { PckgVersionModule } from './packages/pckg-version.module';
 import { ProfileModule } from './profile/profile.module';
 import { RedisModule } from './redis/redis.module';
 import { SmsModule } from './sms/sms.module';
 import { UserModule } from './user/user.module';
+import { PackagesModule } from './packages/packages.module';
 
 @Module({
   imports: [
@@ -31,6 +31,7 @@ import { UserModule } from './user/user.module';
     GroupModule,
     VersionModule,
     ProdPackgVModule,
+    PackagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
