@@ -32,8 +32,8 @@ export class ProdPckgVerRepository {
   ): Promise<CreateProdPackgVDto> {
     try {
       return await this.dataSource.manager
-        .createQueryBuilder(CreateProdPackgVDto, 'createProdPackgVDto')
-        .where('createProdPackgVDto.id=:id', {
+        .createQueryBuilder(CreateProdPackgVDto, 'product')
+        .where('product.id = :id', {
           id: findProdPckgVerDto.prod_pckg_ver_id,
         })
         .getOne();

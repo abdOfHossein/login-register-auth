@@ -35,7 +35,7 @@ export class PckgRepository {
     try {
       return await this.dataSource.manager
         .createQueryBuilder(CreatePckgDto, 'createPckgDto')
-        .where('createPckgDto.id=:id', { id: findPckgDto.pckg_id })
+        .where('createPckgDto.id = :id', { id: findPckgDto.pckg_id })
         .getOne();
     } catch (e) {
       console.log(e);

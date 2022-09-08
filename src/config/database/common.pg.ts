@@ -18,8 +18,6 @@ export const CommonTypeOrmModuleOptions: TypeOrmModuleOptions = {
   password: process.env.DB_PASSWORD || '',
   entities: ['dist/**/*.entity.js', '**/*.entity.js'],
   migrations: ['dist/migrations/*{.ts,.js}'],
-  synchronize:true
-  // cli: {
-  //     migrationsDir: "src/migrations"
-  // }
+  synchronize:true,
+  autoLoadEntities:true
 };

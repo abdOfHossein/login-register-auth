@@ -10,6 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateProdPackgVDto } from '../dto/prod-pckg-v/create-prod-packg-v.dto';
 import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
+import { FindProductDto } from '../dto/product/find.product.dto';
 import { ProPckgVerRlEntity } from '../entities/prod-packg-v.entity';
 import { ProdPackgVService } from '../service/prod-packg-v.service';
 
@@ -18,9 +19,17 @@ import { ProdPackgVService } from '../service/prod-packg-v.service';
 export class ProdPackgVController {
   constructor(private readonly prodPackgVService: ProdPackgVService) {}
 
-  @Post()
-  async create(@Body() createProdPackgVDto: CreateProdPackgVDto) {
-    return await this.prodPackgVService.create(createProdPackgVDto);
+  @Post(':product_id')
+  async create(
+    @Param() findProductDto: FindProductDto,
+    @Body() createProdPackgVDto: CreateProdPackgVDto,
+  ) {
+    console.log(createProdPackgVDto);
+
+    return await this.prodPackgVService.create(
+      createProdPackgVDto,
+      findProductDto,
+    );
   }
 
   @Get(':prod_pckg_ver_id')

@@ -1,5 +1,6 @@
 import { ProPckgVerRlEntity } from './prod-packg-v.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
 @Entity({ schema: 'pckg', name: 'product' })
 export class ProductEntity {
   @PrimaryGeneratedColumn('uuid')

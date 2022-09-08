@@ -40,7 +40,7 @@ export class PckgVersionRepository implements AbstractRepositoryClass {
     try {
       return await this.dataSource.manager
         .createQueryBuilder(CreatePckgVersionDto, 'createPckgVersionDto')
-        .where('createPckgVersionDto.id=:id', {
+        .where('createPckgVersionDto.id = :id', {
           id: findPckgVersionDto.pckg_version_id,
         })
         .getOne();

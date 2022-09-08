@@ -1,9 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
-import { CreateProdPackgVDto } from '../dto/prod-pckg-v/create-prod-packg-v.dto';
 import { CreateProductDto } from '../dto/product/create-product.dto';
 import { FindProductDto } from '../dto/product/find.product.dto';
-import { ProPckgVerRlEntity } from '../entities/prod-packg-v.entity';
 import { ProductEntity } from '../entities/product.entity';
 
 export class ProductRepository {
@@ -31,12 +29,20 @@ export class ProductRepository {
     options?: Record<string, any>,
   ): Promise<CreateProductDto> {
     try {
-      return await this.dataSource.manager
-        .createQueryBuilder(CreateProductDto, 'createProductDto')
-        .where('createProdPackgVDto.id=:id', {
+      console.log('start');
+
+      console.log(findProductDto);
+
+      const product = await this.dataSource.manager
+        .createQueryBuilder(ProductEntity, 'productEntity')
+        .where('productEntity.id = :id', {
           id: findProductDto.product_id,
         })
         .getOne();
+      console.log(product);
+
+      console.log('finish');
+      return product;
     } catch (e) {
       console.log(e);
       throw e;

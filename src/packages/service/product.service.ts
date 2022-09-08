@@ -29,6 +29,8 @@ export class ProductService {
     options?: Record<string, any>,
   ): Promise<CreateProductDto> {
     try {
+      console.log(findProductDto);
+      
       return await this.productRepository.findOneEntity(findProductDto);
     } catch (e) {
       console.log(e);
