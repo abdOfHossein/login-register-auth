@@ -10,7 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePckgVersionDto } from '../dto/pckg-version/create-pckg-version.dto';
 import { FindPckgVersionDto } from '../dto/pckg-version/find.pckg-version.dto';
-import { FindProdPckgVersionDto } from '../dto/pckg-version/find.prod-pckg-ver.dto'; 
+import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
 import { PckgVerRlEntity } from '../entities/pckg-version.entity';
 import { PckgVersionService } from '../service/pckg-version.service';
 
@@ -21,16 +21,16 @@ export class PckgVersionController {
 
   @Post(':prod_pckg_ver_rl_id')
   async create(
-    @Param() findProdPckgVersionDto: FindProdPckgVersionDto,
+    @Param() findProdPckgVerDto: FindProdPckgVerDto,
     @Body() createPckgVersionDto: CreatePckgVersionDto,
   ) {
     return await this.pckgVersionService.create(
       createPckgVersionDto,
-      findProdPckgVersionDto,
+      findProdPckgVerDto,
     );
   }
 
-  @Get(':id')
+  @Get(':pckg_version_id')
   async findOne(@Param() findPckgVersionDto: FindPckgVersionDto) {
     return await this.pckgVersionService.findOne(findPckgVersionDto);
   }

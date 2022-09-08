@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
-import { PckgVerRlEntity } from '../../../package/pckg-version/entities/pckg-version.entity';
 import { CreatePckgDto } from '../dto/pckg/create-pckg.dto';
-import { FindPckgDto } from '../dto/find.pckg.dto';
+import { FindPckgDto } from '../dto/pckg/find.pckg.dto';
+import { PckgVerRlEntity } from '../entities/pckg-version.entity';
 import { PckgEntity } from '../entities/pckg.entity';
 import { PckgRepository } from '../repository/pckg.repository';
 
@@ -26,15 +26,12 @@ export class PckgService {
         .createQueryBuilder(PckgVerRlEntity, 'pckgVerRlEntity')
         .where('pckgVerRlEntity.id = :id', { id: findPckgDto.pckg_id })
         .getOne();
-     await this.pckgRepository.createEntity(createPckgDto, findPckgDto);
+      const pckg = await this.pckgRepository.createEntity(createPckgDto);
+      pckg.pckg_version;
     } catch (e) {
       console.log(e);
       throw e;
     }
-  }
-
-  findAll() {
-    return `This action returns all pckg`;
   }
 
   async findOne(
@@ -42,10 +39,7 @@ export class PckgService {
     options?: Record<string, any>,
   ): Promise<CreatePckgDto> {
     try {
-      return await this.dataSource.manager
-        .createQueryBuilder(CreatePckgDto, 'createPckgDto')
-        .where('createPckgDto.id=:id', { id: findPckgDto.pckg_id })
-        .getOne();
+      return await this.pckgRepository.findOneEntity(findPckgDto);
     } catch (e) {
       console.log(e);
       throw e;
@@ -58,12 +52,7 @@ export class PckgService {
     query?: QueryRunner,
   ) {
     try {
-      pckgEntity.slug = createPckgDto.slug;
-      pckgEntity.image = createPckgDto.image;
-      pckgEntity.status = createPckgDto.status;
-      pckgEntity.mobile_support = createPckgDto.mobile_support;
-      if (query) return await query.manager.save(pckgEntity);
-      return await this.dataSource.manager.save(pckgEntity);
+      return await this.pckgRepository.updateEntity(pckgEntity, createPckgDto);
     } catch (e) {
       console.log(e);
       throw e;
@@ -75,7 +64,7 @@ export class PckgService {
     query?: QueryRunner,
   ): Promise<CreatePckgDto> {
     try {
-      if (query) return await this.dataSource.manager.remove(pckgEntity);
+      return await this.pckgRepository.deleteEntity(pckgEntity);
     } catch (e) {
       console.log(e);
       throw e;

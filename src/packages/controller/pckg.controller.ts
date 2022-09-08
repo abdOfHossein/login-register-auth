@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePckgDto } from '../dto/pckg/create-pckg.dto';
-import { FindPckgDto } from '../pckg/dto/find.pckg.dto';
-import { PckgEntity } from '../pckg/entities/pckg.entity';
+import { FindPckgDto } from '../dto/pckg/find.pckg.dto';
+import { PckgEntity } from '../entities/pckg.entity';
 import { PckgService } from '../service/pckg.service';
 
 @ApiTags('packages/pckg')
@@ -19,19 +19,11 @@ export class PckgController {
   constructor(private readonly pckgService: PckgService) {}
 
   @Post(':pckg_version_id')
-  create(
-    @Param() Param: FindPckgDto,
-    @Body() createPckgDto: CreatePckgDto,
-  ) {
+  create(@Param() Param: FindPckgDto, @Body() createPckgDto: CreatePckgDto) {
     return this.pckgService.create(createPckgDto, Param);
   }
 
-  @Get()
-  findAll() {
-    return this.pckgService.findAll();
-  }
-
-  @Get(':id')
+  @Get(':pckg_id')
   findOne(@Param() Param: FindPckgDto) {
     return this.pckgService.findOne(Param);
   }
@@ -42,7 +34,7 @@ export class PckgController {
   }
 
   @Delete()
- async delete(@Body() pckgEntity: PckgEntity) {
+  async delete(@Body() pckgEntity: PckgEntity) {
     return await this.pckgService.delete(pckgEntity);
   }
 }

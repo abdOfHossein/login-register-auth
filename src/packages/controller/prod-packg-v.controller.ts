@@ -1,40 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ProdPackgVService } from '../service/prod-packg-v.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateProdPackgVDto } from '../dto/prod-pckg-v/create-prod-packg-v.dto';
-import { UpdateProdPackgVDto } from '../prod-packg-v/dto/update-prod-packg-v.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../auth/jwt/jwt-auth.guard';
+import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
+import { ProPckgVerRlEntity } from '../entities/prod-packg-v.entity';
+import { ProdPackgVService } from '../service/prod-packg-v.service';
 
-
-// @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
 @ApiTags('packages/prod-pckg-version')
 @Controller('prod-packg-v')
 export class ProdPackgVController {
   constructor(private readonly prodPackgVService: ProdPackgVService) {}
 
   @Post()
-  create(@Body() createProdPackgVDto: CreateProdPackgVDto) {
-    return this.prodPackgVService.create(createProdPackgVDto);
+  async create(@Body() createProdPackgVDto: CreateProdPackgVDto) {
+    return await this.prodPackgVService.create(createProdPackgVDto);
   }
 
-  @Get()
-  findAll() {
-    return this.prodPackgVService.findAll();
+  @Get(':prod_pckg_ver_id')
+  findOne(@Param() findProdPckgVerDto: FindProdPckgVerDto) {
+    return this.prodPackgVService.findOne(findProdPckgVerDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.prodPackgVService.findOne(+id);
+  @Put()
+  update(
+    proPckgVerRlEntity: ProPckgVerRlEntity,
+    createProdPackgVDto: CreateProdPackgVDto,
+  ) {
+    return this.prodPackgVService.update(
+      proPckgVerRlEntity,
+      createProdPackgVDto,
+    );
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProdPackgVDto: UpdateProdPackgVDto) {
-    return this.prodPackgVService.update(+id, updateProdPackgVDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.prodPackgVService.remove(+id);
+  @Delete()
+  async delete(@Body() proPckgVerRlEntity: ProPckgVerRlEntity) {
+    return await this.prodPackgVService.delete(proPckgVerRlEntity);
   }
 }

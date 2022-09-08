@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
-import { FindPckgDto } from '../dto/find.pckg.dto';
+import { FindPckgDto } from '../dto/pckg/find.pckg.dto';
 import { CreatePckgDto } from '../dto/pckg/create-pckg.dto';
 import { PckgEntity } from '../entities/pckg.entity';
 
@@ -13,7 +13,6 @@ export class PckgRepository {
 
   async createEntity(
     createPckgDto: CreatePckgDto,
-    findPckgDto: FindPckgDto,
     query?: QueryRunner,
   ) {
     try {

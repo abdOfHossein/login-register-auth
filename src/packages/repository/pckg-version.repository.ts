@@ -4,12 +4,11 @@ import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { CreatePckgVersionDto } from '../dto/pckg-version/create-pckg-version.dto';
 import { FindPckgVersionDto } from '../dto/pckg-version/find.pckg-version.dto';
 import { PckgVerRlEntity } from '../entities/pckg-version.entity';
-import { PckgEntity } from '../entities/pckg.entity';
 
 export class PckgVersionRepository implements AbstractRepositoryClass {
   constructor(
-    @InjectRepository(PckgEntity)
-    private ProductRepo: Repository<PckgEntity>,
+    @InjectRepository(PckgVerRlEntity)
+    private pckgVerRlEntity: Repository<PckgVerRlEntity>,
     private dataSource: DataSource,
   ) {}
 

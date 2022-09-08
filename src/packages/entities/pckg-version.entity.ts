@@ -1,6 +1,3 @@
-import { PckgEntity } from '../../pckg/entities/pckg.entity';
-import { ProPckgVerRlEntity } from './prod-packg-v.entity';
-import { VersionEntity } from './version.entity';
 import {
   Column,
   Entity,
@@ -8,9 +5,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { PckgEntity } from './pckg.entity';
+import { ProPckgVerRlEntity } from './prod-packg-v.entity';
+import { VersionEntity } from './version.entity';
 
 @Entity({ schema: 'pckg', name: 'package_version_rl' })
-
 export class PckgVerRlEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -48,15 +47,6 @@ export class PckgVerRlEntity {
   )
   prod_pckg_ver_rl: ProPckgVerRlEntity[];
 
-  // @OneToMany(
-  //   (type) => PckgVerRlDetailEntity,
-  //   (detail) => detail.package_version,
-  //   {
-  //     cascade: true,
-  //   },
-  // )
-  // detail: PackageVerRlDetailEntity[];
-
   @ManyToOne(
     (type) => VersionEntity,
     (version) => version.pckg_version,
@@ -66,14 +56,6 @@ export class PckgVerRlEntity {
   )
   version: VersionEntity;
 
-  @ManyToOne(
-    (type) => PckgEntity,
-    (pckg) => pckg.pckg_version,
-    // {
-    //   primary: false,
-    // },
-  )
+  @ManyToOne((type) => PckgEntity, (pckg) => pckg.pckg_version)
   pckg: PckgEntity;
-  // @OneToMany((type) => OrderRlEntity, (order) => order.package_ver)
-  // order_user: OrderRlEntity[];
 }
