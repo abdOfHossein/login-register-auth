@@ -13,7 +13,7 @@ import { JwtStrategy } from './jwt/jwt.strategy';
 import { LocalStrategy } from './jwt/local.strategy';
 
 const config = require('dotenv').config(join(__dirname, '../../.env'));
-const secret = process.env.JWT_SECRET_KEY;
+const secret ='process.env.JWT_SECRET_KEY';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ const secret = process.env.JWT_SECRET_KEY;
     EmailModule,
     PassportModule,
     JwtModule.register({
-      secret,
+      secret:'mySecert',
       signOptions: { expiresIn: '360s' },
     }),
     TypeOrmModule.forFeature([User]),

@@ -5,20 +5,19 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { join } from 'path';
 import { User } from '../../user/entities/user.entity';
 import { Repository } from 'typeorm';
-
-const config = require('dotenv').config(join(__dirname, '../../.env'));
-const secretOrKey = process.env.JWT_SECRET_KEY;
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private configService:ConfigService
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey,
+      secretOrKey:configService.get<string>('JWT_SECRET_KEY'),
     });
   }
 
