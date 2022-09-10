@@ -12,41 +12,31 @@ export class ProductRepository {
   ) {}
 
   async createEntity(CreateProductDto: CreateProductDto, query?: QueryRunner) {
-    try {
-      const packageEntity = new ProductEntity();
-      packageEntity.link = CreateProductDto.link;
-      packageEntity.slug = CreateProductDto.slug;
-      if (query) return await query.manager.save(packageEntity);
-      return await this.dataSource.manager.save(packageEntity);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    const packageEntity = new ProductEntity();
+    packageEntity.link = CreateProductDto.link;
+    packageEntity.slug = CreateProductDto.slug;
+    if (query) return await query.manager.save(packageEntity);
+    return await this.dataSource.manager.save(packageEntity);
   }
 
   async findOneEntity(
     findProductDto: FindProductDto,
     options?: Record<string, any>,
   ): Promise<CreateProductDto> {
-    try {
-      console.log('start');
+    console.log('start');
 
-      console.log(findProductDto);
+    console.log(findProductDto);
 
-      const product = await this.dataSource.manager
-        .createQueryBuilder(ProductEntity, 'productEntity')
-        .where('productEntity.id = :id', {
-          id: findProductDto.product_id,
-        })
-        .getOne();
-      console.log(product);
+    const product = await this.dataSource.manager
+      .createQueryBuilder(ProductEntity, 'productEntity')
+      .where('productEntity.id = :id', {
+        id: findProductDto.product_id,
+      })
+      .getOne();
+    console.log(product);
 
-      console.log('finish');
-      return product;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    console.log('finish');
+    return product;
   }
 
   async updateEntity(
@@ -54,26 +44,16 @@ export class ProductRepository {
     createProductDto: CreateProductDto,
     query?: QueryRunner,
   ): Promise<any> {
-    try {
-      productEntity.link = createProductDto.link;
-      if (query) return await query.manager.save(createProductDto);
-      return await this.dataSource.manager.save(createProductDto);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    productEntity.link = createProductDto.link;
+    if (query) return await query.manager.save(createProductDto);
+    return await this.dataSource.manager.save(createProductDto);
   }
 
   async deleteEntity(
     productEntity: ProductEntity,
     query?: QueryRunner,
   ): Promise<CreateProductDto> {
-    try {
-      if (query) return await query.manager.remove(productEntity);
-      return await this.dataSource.manager.remove(productEntity);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    if (query) return await query.manager.remove(productEntity);
+    return await this.dataSource.manager.remove(productEntity);
   }
 }

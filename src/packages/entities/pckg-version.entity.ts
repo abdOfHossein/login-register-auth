@@ -9,7 +9,7 @@ import { PckgEntity } from './pckg.entity';
 import { ProPckgVerRlEntity } from './prod-packg-v.entity';
 import { VersionEntity } from './version.entity';
 
-@Entity({ schema: 'pckg', name: 'package_version_rl' })
+@Entity({ schema: 'pckg', name: 'pckg_ver_rl' })
 export class PckgVerRlEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -41,18 +41,12 @@ export class PckgVerRlEntity {
   @OneToMany(
     (type) => ProPckgVerRlEntity,
     (prod_pckg_ver_rl) => prod_pckg_ver_rl.pckg_ver_rl,
-    {
-      cascade: true,
-    },
   )
   prod_pckg_ver_rl: ProPckgVerRlEntity[];
 
   @ManyToOne(
     (type) => VersionEntity,
     (version) => version.pckg_version,
-    // {
-    //   primary: false,
-    // },
   )
   version: VersionEntity;
 

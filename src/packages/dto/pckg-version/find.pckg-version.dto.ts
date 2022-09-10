@@ -1,6 +1,11 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 export class FindPckgVersionDto {
   @IsNotEmpty()
-  pckg_version_id: number;
+  @ApiProperty({
+    description: 'enter your pckg_version_id',
+    example: '5468541f54awaa24154sffs4',
+  })
+  pckg_version_id: string;
 }

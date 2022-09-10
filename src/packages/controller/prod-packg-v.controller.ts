@@ -27,8 +27,9 @@ export class ProdPackgVController {
     console.log(createProdPackgVDto);
 
     return await this.prodPackgVService.create(
-      createProdPackgVDto,
       findProductDto,
+      createProdPackgVDto,
+    
     );
   }
 

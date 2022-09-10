@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
-import { FindPckgVersionDto } from '../dto/pckg-version/find.pckg-version.dto'; 
-import { FindProdPckgVersionDto } from '../dto/pckg-version/find.prod-pckg-ver.dto'; 
+import { DataSource, Repository } from 'typeorm';
 import { CreatePckgVersionDto } from '../dto/pckg-version/create-pckg-version.dto';
+import { FindPckgVersionDto } from '../dto/pckg-version/find.pckg-version.dto';
+import { FindPckgDto } from '../dto/pckg/find.pckg.dto';
+import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
 import { PckgVerRlEntity } from '../entities/pckg-version.entity';
 import { VersionEntity } from '../entities/version.entity';
 import { PckgVersionRepository } from '../repository/pckg-version.repository';
+import { PckgService } from './pckg.service';
 import { ProdPackgVService } from './prod-packg-v.service';
-import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
 
 @Injectable()
 export class PckgVersionService {
@@ -21,25 +22,23 @@ export class PckgVersionService {
   ) {}
 
   async create(
-    createPckgVersionDto: CreatePckgVersionDto,
     findProdPckgVerDto: FindProdPckgVerDto,
-    query?: QueryRunner,
+    createPckgVersionDto: CreatePckgVersionDto,
   ) {
     try {
-      const prod_pckg_ver_rl = await this.prodPackgVService.findOne(
-        findProdPckgVerDto
-      );
-
-      const pckgVerRlEntity:any = await this.pckgVersionRepository.createEntity(
-        createPckgVersionDto,
-      );
-
-      pckgVerRlEntity.prod_pckg_ver_rl = [prod_pckg_ver_rl];
-
-      const version = this.dataSource.manager.create(VersionEntity);
-      version.pckg_version = [pckgVerRlEntity];
+      //find prod_pckg_ver_rl,pckg,version to add to packageversion for complete relation between them
+      console.log(`findProdPckgVerDto ===>${JSON.stringify(findProdPckgVerDto)}`);
+      
+      const prod_pckg_ver_rl: any = await this.prodPackgVService.findOne(findProdPckgVerDto)
+      console.log(prod_pckg_ver_rl);
+      
+      const version: any = this.dataSource.manager.create(VersionEntity);
       await this.dataSource.manager.save(version);
-
+      const pckgVerRlEntity = await this.pckgVersionRepository.createEntity(
+        createPckgVersionDto,
+        prod_pckg_ver_rl,
+        version,
+      );
       return pckgVerRlEntity;
     } catch (e) {
       console.log(e);
@@ -62,7 +61,6 @@ export class PckgVersionService {
   async update(
     pckgVerRlEntity: PckgVerRlEntity,
     createPckgVersionDto: CreatePckgVersionDto,
-    query?: QueryRunner,
   ) {
     try {
       return await this.pckgVersionRepository.updateEntity(
@@ -77,7 +75,6 @@ export class PckgVersionService {
 
   async delete(
     pckgVerRlEntity: PckgVerRlEntity,
-    query?: QueryRunner,
   ): Promise<CreatePckgVersionDto> {
     try {
       return await this.pckgVersionRepository.deleteEntity(pckgVerRlEntity);

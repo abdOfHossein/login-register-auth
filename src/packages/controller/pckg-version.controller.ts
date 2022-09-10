@@ -10,7 +10,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePckgVersionDto } from '../dto/pckg-version/create-pckg-version.dto';
 import { FindPckgVersionDto } from '../dto/pckg-version/find.pckg-version.dto';
-import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
 import { PckgVerRlEntity } from '../entities/pckg-version.entity';
 import { PckgVersionService } from '../service/pckg-version.service';
 
@@ -19,14 +18,27 @@ import { PckgVersionService } from '../service/pckg-version.service';
 export class PckgVersionController {
   constructor(private readonly pckgVersionService: PckgVersionService) {}
 
-  @Post(':prod_pckg_ver_rl_id')
+  //  @ApiParam({
+  //     name: 'name',
+  //     description:
+  //       'This Decorator specifies the documentation for a specific Parameter, in this case the <b>name</b> Param.',
+  //     allowEmptyValue: false,
+  //     examples: {
+  //       a: {
+  //         summary: 'id of prod_pckg_version',
+  //         value: 'daacd025-ad46-4831-8e6c-c8edb285fd25',
+  //       },
+  //     },
+  //   })
+  @Post(':prod_pckg_ver_id')
   async create(
-    @Param() findProdPckgVerDto: FindProdPckgVerDto,
+    @Param('prod_pckg_ver_id') prod_pckg_ver_id: string,
     @Body() createPckgVersionDto: CreatePckgVersionDto,
   ) {
+    const findProdPckgVerDto = { prod_pckg_ver_id };
     return await this.pckgVersionService.create(
-      createPckgVersionDto,
       findProdPckgVerDto,
+      createPckgVersionDto,
     );
   }
 

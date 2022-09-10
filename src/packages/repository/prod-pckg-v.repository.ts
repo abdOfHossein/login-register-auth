@@ -3,6 +3,7 @@ import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { CreateProdPackgVDto } from '../dto/prod-pckg-v/create-prod-packg-v.dto';
 import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
 import { ProPckgVerRlEntity } from '../entities/prod-packg-v.entity';
+import { ProductEntity } from '../entities/product.entity';
 
 export class ProdPckgVerRepository {
   constructor(
@@ -13,34 +14,26 @@ export class ProdPckgVerRepository {
 
   async createEntity(
     createProdPackgVDto: CreateProdPackgVDto,
+    product: ProductEntity,
     query?: QueryRunner,
   ) {
-    try {
-      const packageEntity = new ProPckgVerRlEntity();
-      packageEntity.amount = createProdPackgVDto.amount;
-      if (query) return await query.manager.save(packageEntity);
-      return await this.dataSource.manager.save(packageEntity);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    const packageEntity = new ProPckgVerRlEntity();
+    packageEntity.amount = createProdPackgVDto.amount;
+    packageEntity.product = product;
+    if (query) return await query.manager.save(packageEntity);
+    return await this.dataSource.manager.save(packageEntity);
   }
 
   async findOneEntity(
     findProdPckgVerDto: FindProdPckgVerDto,
     options?: Record<string, any>,
   ): Promise<CreateProdPackgVDto> {
-    try {
-      return await this.dataSource.manager
-        .createQueryBuilder(CreateProdPackgVDto, 'product')
-        .where('product.id = :id', {
-          id: findProdPckgVerDto.prod_pckg_ver_id,
-        })
-        .getOne();
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    return await this.dataSource.manager
+      .createQueryBuilder(ProPckgVerRlEntity, 'proPckgVerRlEntity')
+      .where('proPckgVerRlEntity.id = :id', {
+        id: findProdPckgVerDto.prod_pckg_ver_id,
+      })
+      .getOne();
   }
 
   async updateEntity(
@@ -48,26 +41,16 @@ export class ProdPckgVerRepository {
     createProdPackgVDto: CreateProdPackgVDto,
     query?: QueryRunner,
   ): Promise<any> {
-    try {
-      proPckgVerRlEntity.amount = createProdPackgVDto.amount;
-      if (query) return await query.manager.save(proPckgVerRlEntity);
-      return await this.dataSource.manager.save(proPckgVerRlEntity);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    proPckgVerRlEntity.amount = createProdPackgVDto.amount;
+    if (query) return await query.manager.save(proPckgVerRlEntity);
+    return await this.dataSource.manager.save(proPckgVerRlEntity);
   }
 
   async deleteEntity(
     proPckgVerRlEntity: ProPckgVerRlEntity,
     query?: QueryRunner,
   ): Promise<CreateProdPackgVDto> {
-    try {
-      if (query) return await query.manager.remove(proPckgVerRlEntity);
-      return await this.dataSource.manager.remove(proPckgVerRlEntity);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    if (query) return await query.manager.remove(proPckgVerRlEntity);
+    return await this.dataSource.manager.remove(proPckgVerRlEntity);
   }
 }

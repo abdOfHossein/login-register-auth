@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateProdPackgVDto } from '../dto/prod-pckg-v/create-prod-packg-v.dto';
 import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
 import { FindProductDto } from '../dto/product/find.product.dto';
@@ -19,22 +19,16 @@ export class ProdPackgVService {
   ) {}
 
   async create(
-    createProdPackgVDto: CreateProdPackgVDto,
     findProductDto: FindProductDto,
-    query?: QueryRunner,
+    createProdPackgVDto: CreateProdPackgVDto,
   ) {
     try {
-      const product = await this.productService.findOne(findProductDto);
-
-      const prodPckgVersionEnt: any =
-        await this.prodPckgVerRepository.createEntity(createProdPackgVDto);
-      const updatedProdPckgVersionEnt = await this.dataSource.manager.update(
-        ProPckgVerRlEntity,
-        prodPckgVersionEnt.id,
-        { product },
+      const product: any = await this.productService.findOne(findProductDto);
+      const prodPckgVersionEnt = await this.prodPckgVerRepository.createEntity(
+        createProdPackgVDto,
+        product,
       );
-      console.log(updatedProdPckgVersionEnt);
-      return updatedProdPckgVersionEnt;
+      return prodPckgVersionEnt;
     } catch (e) {
       console.log(e);
       throw e;
@@ -43,10 +37,15 @@ export class ProdPackgVService {
 
   async findOne(
     findProdPckgVerDto: FindProdPckgVerDto,
-    options?: Record<string, any>,
   ): Promise<CreateProdPackgVDto> {
     try {
-      return await this.prodPckgVerRepository.findOneEntity(findProdPckgVerDto);
+      console.log('start');
+
+      const prodPckgVer = await this.prodPckgVerRepository.findOneEntity(
+        findProdPckgVerDto,
+      );
+      console.log('finish');
+      return prodPckgVer;
     } catch (e) {
       console.log(e);
       throw e;
@@ -56,7 +55,6 @@ export class ProdPackgVService {
   async update(
     proPckgVerRlEntity: ProPckgVerRlEntity,
     createProdPackgVDto: CreateProdPackgVDto,
-    query?: QueryRunner,
   ) {
     try {
       return await this.prodPckgVerRepository.updateEntity(
@@ -71,7 +69,6 @@ export class ProdPackgVService {
 
   async delete(
     proPckgVerRlEntity: ProPckgVerRlEntity,
-    query?: QueryRunner,
   ): Promise<CreateProdPackgVDto> {
     try {
       return await this.prodPckgVerRepository.deleteEntity(proPckgVerRlEntity);

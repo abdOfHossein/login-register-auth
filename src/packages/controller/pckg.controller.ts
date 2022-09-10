@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Put
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePckgDto } from '../dto/pckg/create-pckg.dto';
@@ -19,8 +19,12 @@ export class PckgController {
   constructor(private readonly pckgService: PckgService) {}
 
   @Post(':pckg_version_id')
-  create(@Param() Param: FindPckgDto, @Body() createPckgDto: CreatePckgDto) {
-    return this.pckgService.create(createPckgDto, Param);
+  async create(
+    @Param('pckg_version_id') pckg_version_id: string,
+    @Body() createPckgDto: CreatePckgDto,
+  ) {
+    const findPckgVersionDto = { pckg_version_id };
+    return await this.pckgService.create(findPckgVersionDto, createPckgDto);
   }
 
   @Get(':pckg_id')

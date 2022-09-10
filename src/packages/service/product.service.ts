@@ -10,12 +10,11 @@ import { ProductRepository } from '../repository/product.dto';
 export class ProductService {
   constructor(
     @InjectRepository(ProductEntity)
-    // private ProductRepo: Repository<ProductEntity>,
     private dataSource: DataSource,
     private productRepository: ProductRepository,
   ) {}
 
-  async create(createProductDto: CreateProductDto, query?: QueryRunner) {
+  async create(createProductDto: CreateProductDto) {
     try {
       return await this.productRepository.createEntity(createProductDto);
     } catch (e) {
@@ -41,7 +40,6 @@ export class ProductService {
   async update(
     productEntity: ProductEntity,
     createProductDto: CreateProductDto,
-    query?: QueryRunner,
   ) {
     try {
       return await this.productRepository.updateEntity(
@@ -56,7 +54,6 @@ export class ProductService {
 
   async delete(
     productEntity: ProductEntity,
-    query?: QueryRunner,
   ): Promise<CreateProductDto> {
     try {
       return await this.productRepository.deleteEntity(productEntity);
