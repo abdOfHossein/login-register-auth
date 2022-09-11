@@ -29,7 +29,6 @@ export class ProdPackgVController {
     return await this.prodPackgVService.create(
       findProductDto,
       createProdPackgVDto,
-    
     );
   }
 
@@ -38,13 +37,19 @@ export class ProdPackgVController {
     return this.prodPackgVService.findOne(findProdPckgVerDto);
   }
 
-  @Put()
-  update(
-    proPckgVerRlEntity: ProPckgVerRlEntity,
-    createProdPackgVDto: CreateProdPackgVDto,
+  @Get()
+  findAll() {
+    return this.prodPackgVService.findAll();
+  }
+
+  @Put(':prod_pckg_ver_id')
+  async update(
+    @Param('prod_pckg_ver_id') prod_pckg_ver_id: string,
+    @Body() createProdPackgVDto: CreateProdPackgVDto,
   ) {
-    return this.prodPackgVService.update(
-      proPckgVerRlEntity,
+    const findProdPckgVer = { prod_pckg_ver_id };
+    return await this.prodPackgVService.update(
+      findProdPckgVer,
       createProdPackgVDto,
     );
   }

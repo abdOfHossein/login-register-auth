@@ -12,15 +12,9 @@ export class ProductEntity {
   @Column({ unique: true })
   link: string;
 
-  // @Column({ type: 'enum', enum: typeProduct, nullable: true})
-  // type_product: typeProduct
-
   @OneToMany(
     (type) => ProPckgVerRlEntity,
     (prod_pckg_ver_rl) => prod_pckg_ver_rl.product,
-    {
-      cascade: true,
-    },
   )
   prod_pckg_ver_rl: ProPckgVerRlEntity[];
 }

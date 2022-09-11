@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { CreateProductDto } from '../dto/product/create-product.dto';
 import { FindProductDto } from '../dto/product/find.product.dto';
 import { ProductEntity } from '../entities/product.entity';
@@ -29,7 +29,7 @@ export class ProductService {
   ): Promise<CreateProductDto> {
     try {
       console.log(findProductDto);
-      
+
       return await this.productRepository.findOneEntity(findProductDto);
     } catch (e) {
       console.log(e);
@@ -37,13 +37,27 @@ export class ProductService {
     }
   }
 
+  async findAll(): Promise<CreateProductDto[]> {
+    try {
+      return await this.productRepository.findAllEntity();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
   async update(
-    productEntity: ProductEntity,
+    findProductDto: FindProductDto,
     createProductDto: CreateProductDto,
   ) {
     try {
+      const product:ProductEntity = await this.dataSource.manager
+        .createQueryBuilder(ProductEntity, 'productEntity')
+        .where('productEntity.id = :id', { id: findProductDto.product_id })
+        .getOne();
+      console.log(product);
       return await this.productRepository.updateEntity(
-        productEntity,
+        product,
         createProductDto,
       );
     } catch (e) {
@@ -52,9 +66,7 @@ export class ProductService {
     }
   }
 
-  async delete(
-    productEntity: ProductEntity,
-  ): Promise<CreateProductDto> {
+  async delete(productEntity: ProductEntity): Promise<CreateProductDto> {
     try {
       return await this.productRepository.deleteEntity(productEntity);
     } catch (e) {

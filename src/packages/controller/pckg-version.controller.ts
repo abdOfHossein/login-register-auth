@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Put
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePckgVersionDto } from '../dto/pckg-version/create-pckg-version.dto';
@@ -18,18 +18,6 @@ import { PckgVersionService } from '../service/pckg-version.service';
 export class PckgVersionController {
   constructor(private readonly pckgVersionService: PckgVersionService) {}
 
-  //  @ApiParam({
-  //     name: 'name',
-  //     description:
-  //       'This Decorator specifies the documentation for a specific Parameter, in this case the <b>name</b> Param.',
-  //     allowEmptyValue: false,
-  //     examples: {
-  //       a: {
-  //         summary: 'id of prod_pckg_version',
-  //         value: 'daacd025-ad46-4831-8e6c-c8edb285fd25',
-  //       },
-  //     },
-  //   })
   @Post(':prod_pckg_ver_id')
   async create(
     @Param('prod_pckg_ver_id') prod_pckg_ver_id: string,
@@ -47,12 +35,21 @@ export class PckgVersionController {
     return await this.pckgVersionService.findOne(findPckgVersionDto);
   }
 
-  @Put()
-  update(
-    pckgVerRlEntity: PckgVerRlEntity,
-    createPckgVerionDto: CreatePckgVersionDto,
+  @Get()
+  async findAll() {
+    return await this.pckgVersionService.findAll();
+  }
+
+  @Put(':pckg_version_id')
+  async update(
+    @Param('pckg_version_id') pckg_version_id: string,
+    @Body() createPckgVerionDto: CreatePckgVersionDto,
   ) {
-    return this.pckgVersionService.update(pckgVerRlEntity, createPckgVerionDto);
+    const findPckgVer = { pckg_version_id };
+    return await this.pckgVersionService.update(
+      findPckgVer,
+      createPckgVerionDto,
+    );
   }
 
   @Delete()

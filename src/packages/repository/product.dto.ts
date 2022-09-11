@@ -22,21 +22,22 @@ export class ProductRepository {
   async findOneEntity(
     findProductDto: FindProductDto,
     options?: Record<string, any>,
-  ): Promise<CreateProductDto> {
-    console.log('start');
+  ): Promise<ProductEntity> {
+    return await this.dataSource.manager.getRepository(ProductEntity).findOne({
+      where: { id: findProductDto.product_id },
+      relations: {
+        prod_pckg_ver_rl: true,
+      },
+    });
+  }
 
-    console.log(findProductDto);
-
-    const product = await this.dataSource.manager
-      .createQueryBuilder(ProductEntity, 'productEntity')
-      .where('productEntity.id = :id', {
-        id: findProductDto.product_id,
-      })
-      .getOne();
-    console.log(product);
-
-    console.log('finish');
-    return product;
+  async findAllEntity(): Promise<ProductEntity[]> {
+    return await this.dataSource.manager.getRepository(ProductEntity).find({
+      where: {},
+      relations: {
+        prod_pckg_ver_rl: true,
+      },
+    });
   }
 
   async updateEntity(
@@ -44,9 +45,10 @@ export class ProductRepository {
     createProductDto: CreateProductDto,
     query?: QueryRunner,
   ): Promise<any> {
+    productEntity.slug = createProductDto.slug;
     productEntity.link = createProductDto.link;
-    if (query) return await query.manager.save(createProductDto);
-    return await this.dataSource.manager.save(createProductDto);
+    if (query) return await query.manager.save(productEntity);
+    return await this.dataSource.manager.save(productEntity);
   }
 
   async deleteEntity(

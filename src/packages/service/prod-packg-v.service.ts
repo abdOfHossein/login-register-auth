@@ -39,12 +39,10 @@ export class ProdPackgVService {
     findProdPckgVerDto: FindProdPckgVerDto,
   ): Promise<CreateProdPackgVDto> {
     try {
-      console.log('start');
-
       const prodPckgVer = await this.prodPckgVerRepository.findOneEntity(
         findProdPckgVerDto,
       );
-      console.log('finish');
+      console.log(prodPckgVer);
       return prodPckgVer;
     } catch (e) {
       console.log(e);
@@ -52,13 +50,31 @@ export class ProdPackgVService {
     }
   }
 
+  async findAll(): Promise<ProPckgVerRlEntity[]> {
+    try {
+      return await this.prodPckgVerRepository.findAllEntity();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
   async update(
-    proPckgVerRlEntity: ProPckgVerRlEntity,
+    findProdPckgVerDto: FindProdPckgVerDto,
     createProdPackgVDto: CreateProdPackgVDto,
   ) {
     try {
+      const prodPckgVer = await this.dataSource.manager
+        .createQueryBuilder(ProPckgVerRlEntity, 'proPckgVerRlEntity')
+        .where('proPckgVerRlEntity.id = :id', {
+          id: findProdPckgVerDto.prod_pckg_ver_id,
+        })
+        .getOne();
+        console.log(prodPckgVer);
+        console.log(createProdPackgVDto);
+        
       return await this.prodPckgVerRepository.updateEntity(
-        proPckgVerRlEntity,
+        prodPckgVer,
         createProdPackgVDto,
       );
     } catch (e) {

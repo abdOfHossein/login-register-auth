@@ -8,7 +8,7 @@ import { PckgEntity } from '../entities/pckg.entity';
 export class PckgRepository {
   constructor(
     @InjectRepository(PckgEntity)
-    private ProductRepo: Repository<PckgEntity>,
+    private pckgRepo: Repository<PckgEntity>,
     private dataSource: DataSource,
   ) {}
 
@@ -30,11 +30,22 @@ export class PckgRepository {
   async findOneEntity(
     findPckgDto: FindPckgDto,
     options?: Record<string, any>,
-  ): Promise<CreatePckgDto> {
-    return await this.dataSource.manager
-      .createQueryBuilder(PckgEntity, 'pckgEntity')
-      .where('pckgEntity.id = :id', { id: findPckgDto.pckg_id })
-      .getOne();
+  ): Promise<PckgEntity> {
+    return await this.dataSource.manager.getRepository(PckgEntity).findOne({
+      where: { id: findPckgDto.pckg_id },
+      relations: {
+        pckg_version: true,
+      },
+    });
+  }
+
+  async findAllEntity(options?: Record<string, any>): Promise<PckgEntity[]> {
+    return await this.dataSource.manager.getRepository(PckgEntity).find({
+      where: {},
+      relations: {
+        pckg_version: true,
+      },
+    });
   }
 
   async updateEntity(

@@ -29,11 +29,28 @@ export class ProdPckgVerRepository {
     options?: Record<string, any>,
   ): Promise<CreateProdPackgVDto> {
     return await this.dataSource.manager
-      .createQueryBuilder(ProPckgVerRlEntity, 'proPckgVerRlEntity')
-      .where('proPckgVerRlEntity.id = :id', {
-        id: findProdPckgVerDto.prod_pckg_ver_id,
-      })
-      .getOne();
+      .getRepository(ProPckgVerRlEntity)
+      .findOne({
+        where: {
+          id: findProdPckgVerDto.prod_pckg_ver_id,
+        },
+        relations: {
+          product: true,
+        },
+      });
+  }
+
+  async findAllEntity(
+    options?: Record<string, any>,
+  ): Promise<ProPckgVerRlEntity[]> {
+    return await this.dataSource.manager
+      .getRepository(ProPckgVerRlEntity)
+      .find({
+        where: {},
+        relations: {
+          product: true,
+        },
+      });
   }
 
   async updateEntity(

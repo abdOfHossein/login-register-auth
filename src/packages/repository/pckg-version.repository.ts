@@ -3,7 +3,6 @@ import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { CreatePckgVersionDto } from '../dto/pckg-version/create-pckg-version.dto';
 import { FindPckgVersionDto } from '../dto/pckg-version/find.pckg-version.dto';
 import { PckgVerRlEntity } from '../entities/pckg-version.entity';
-import { PckgEntity } from '../entities/pckg.entity';
 import { ProPckgVerRlEntity } from '../entities/prod-packg-v.entity';
 import { VersionEntity } from '../entities/version.entity';
 
@@ -37,13 +36,31 @@ export class PckgVersionRepository {
   async findOneEntity(
     findPckgVersionDto: FindPckgVersionDto,
     options?: Record<string, any>,
-  ): Promise<CreatePckgVersionDto> {
+  ): Promise<PckgVerRlEntity> {
     return await this.dataSource.manager
-      .createQueryBuilder(PckgVerRlEntity, 'pckgVerRlEntity')
-      .where('pckgVerRlEntity.id = :id', {
-        id: findPckgVersionDto.pckg_version_id,
-      })
-      .getOne();
+      .getRepository(PckgVerRlEntity)
+      .findOne({
+        where: { id: findPckgVersionDto.pckg_version_id },
+        relations: {
+          prod_pckg_ver_rl: true,
+          pckg:true,
+          version:true
+        },
+      });
+  }
+
+
+  async findAllEntity(
+    options?: Record<string, any>,
+  ): Promise<PckgVerRlEntity[]> {
+    return await this.dataSource.manager.getRepository(PckgVerRlEntity).find({
+      where: {},
+      relations: {
+        prod_pckg_ver_rl: true,
+        pckg:true,
+        version:true
+      },
+    });
   }
 
   async updateEntity(

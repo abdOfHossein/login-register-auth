@@ -6,14 +6,13 @@ import { CreatePckgDto } from '../dto/pckg/create-pckg.dto';
 import { FindPckgDto } from '../dto/pckg/find.pckg.dto';
 import { PckgVerRlEntity } from '../entities/pckg-version.entity';
 import { PckgEntity } from '../entities/pckg.entity';
-import { PckgVersionRepository } from '../repository/pckg-version.repository';
 import { PckgRepository } from '../repository/pckg.repository';
 
 @Injectable()
 export class PckgService {
   constructor(
     @InjectRepository(PckgEntity)
-    private ProductRepo: Repository<PckgEntity>,
+    private pckgRepo: Repository<PckgEntity>,
     private dataSource: DataSource,
     private pckgRepository: PckgRepository,
   ) {}
@@ -23,13 +22,12 @@ export class PckgService {
     createPckgDto: CreatePckgDto,
   ) {
     try {
-      
       const pckg_version: any = await this.dataSource.manager.findOne(
         PckgVerRlEntity,
         { where: { id: findPckgVersionDto.pckg_version_id } },
       );
-      console.log( pckg_version);
-      
+      console.log(pckg_version);
+
       console.log(pckg_version);
 
       const pckg = await this.pckgRepository.createEntity(
@@ -46,8 +44,10 @@ export class PckgService {
   async findOne(
     findPckgDto: FindPckgDto,
     options?: Record<string, any>,
-  ): Promise<CreatePckgDto> {
+  ): Promise<PckgEntity> {
     try {
+      console.log(findPckgDto);
+
       return await this.pckgRepository.findOneEntity(findPckgDto);
     } catch (e) {
       console.log(e);
@@ -55,8 +55,23 @@ export class PckgService {
     }
   }
 
-  async update(pckgEntity: PckgEntity, createPckgDto: CreatePckgDto) {
+  async findAll(): Promise<PckgEntity[]> {
     try {
+      return await this.pckgRepository.findAllEntity();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async update(findPckgDto: FindPckgDto, createPckgDto: CreatePckgDto) {
+    try {
+      const pckgEntity = await this.dataSource.manager
+        .createQueryBuilder(PckgEntity, 'pckgEntity')
+        .where('pckgEntity.id = :id', {
+          id: findPckgDto.pckg_id,
+        })
+        .getOne();
       return await this.pckgRepository.updateEntity(pckgEntity, createPckgDto);
     } catch (e) {
       console.log(e);

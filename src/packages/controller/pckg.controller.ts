@@ -5,11 +5,10 @@ import {
   Get,
   Param,
   Post,
-  Put
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePckgDto } from '../dto/pckg/create-pckg.dto';
-import { FindPckgDto } from '../dto/pckg/find.pckg.dto';
 import { PckgEntity } from '../entities/pckg.entity';
 import { PckgService } from '../service/pckg.service';
 
@@ -28,13 +27,23 @@ export class PckgController {
   }
 
   @Get(':pckg_id')
-  findOne(@Param() Param: FindPckgDto) {
-    return this.pckgService.findOne(Param);
+  async findOne(@Param('pckg_id') pckg_id: string) {
+    const findPckgVersion = { pckg_id };
+    return await this.pckgService.findOne(findPckgVersion);
   }
 
-  @Put()
-  update(pckgEntity: PckgEntity, createPckgDto: CreatePckgDto) {
-    return this.pckgService.update(pckgEntity, createPckgDto);
+  @Get()
+  async findAll() {
+    return await this.pckgService.findAll();
+  }
+
+  @Put(':pckg_id')
+  update(
+    @Param('pckg_id') pckg_id: string,
+    @Body() createPckgDto: CreatePckgDto,
+  ) {
+    const findPckg = { pckg_id };
+    return this.pckgService.update(findPckg, createPckgDto);
   }
 
   @Delete()
