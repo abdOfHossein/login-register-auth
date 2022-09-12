@@ -5,12 +5,11 @@ import {
   Get,
   Param,
   Post,
-  Put
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePckgVersionDto } from '../dto/pckg-version/create-pckg-version.dto';
 import { FindPckgVersionDto } from '../dto/pckg-version/find.pckg-version.dto';
-import { PckgVerRlEntity } from '../entities/pckg-version.entity';
 import { PckgVersionService } from '../service/pckg-version.service';
 
 @ApiTags('packages/pckg-version')
@@ -18,14 +17,18 @@ import { PckgVersionService } from '../service/pckg-version.service';
 export class PckgVersionController {
   constructor(private readonly pckgVersionService: PckgVersionService) {}
 
-  @Post(':prod_pckg_ver_id')
+  @Post('/:pckg_id/:version_id')
   async create(
-    @Param('prod_pckg_ver_id') prod_pckg_ver_id: string,
+    @Param('pckg_id') pckg_id: string,
+    @Param('version_id') version_id: string,
     @Body() createPckgVersionDto: CreatePckgVersionDto,
   ) {
-    const findProdPckgVerDto = { prod_pckg_ver_id };
+    const findPckgDto = { pckg_id };
+    const FindVersionDto = { version_id };
+
     return await this.pckgVersionService.create(
-      findProdPckgVerDto,
+      findPckgDto,
+      FindVersionDto,
       createPckgVersionDto,
     );
   }
@@ -51,9 +54,9 @@ export class PckgVersionController {
       createPckgVerionDto,
     );
   }
-
-  @Delete()
-  delete(@Body() pckgVerRlEntity: PckgVerRlEntity) {
-    return this.pckgVersionService.delete(pckgVerRlEntity);
+  @Delete(':pckg_version_id')
+  async delete(@Param('pckg_version_id') pckg_version_id: string) {
+    const findProdPckgVer = { pckg_version_id };
+    return await this.pckgVersionService.delete(findProdPckgVer);
   }
 }

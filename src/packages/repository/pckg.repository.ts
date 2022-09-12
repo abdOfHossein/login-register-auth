@@ -4,17 +4,17 @@ import { CreatePckgDto } from '../dto/pckg/create-pckg.dto';
 import { FindPckgDto } from '../dto/pckg/find.pckg.dto';
 import { PckgVerRlEntity } from '../entities/pckg-version.entity';
 import { PckgEntity } from '../entities/pckg.entity';
+import { VersionEntity } from '../entities/version.entity';
 
 export class PckgRepository {
   constructor(
     @InjectRepository(PckgEntity)
-    private pckgRepo: Repository<PckgEntity>,
     private dataSource: DataSource,
   ) {}
 
   async createEntity(
     createPckgDto: CreatePckgDto,
-    pckgVerRlEntity: PckgVerRlEntity,
+    versionEntity:VersionEntity,
     query?: QueryRunner,
   ) {
     const packageEntity = new PckgEntity();
@@ -22,7 +22,6 @@ export class PckgRepository {
     packageEntity.image = createPckgDto.image;
     packageEntity.mobile_support = createPckgDto.mobile_support;
     packageEntity.status = createPckgDto.status;
-    packageEntity.pckg_version = [pckgVerRlEntity];
     if (query) return await query.manager.save(packageEntity);
     return await this.dataSource.manager.save(packageEntity);
   }
@@ -32,19 +31,13 @@ export class PckgRepository {
     options?: Record<string, any>,
   ): Promise<PckgEntity> {
     return await this.dataSource.manager.getRepository(PckgEntity).findOne({
-      where: { id: findPckgDto.pckg_id },
-      relations: {
-        pckg_version: true,
-      },
+      where: { id: findPckgDto.pckg_id }
     });
   }
 
   async findAllEntity(options?: Record<string, any>): Promise<PckgEntity[]> {
     return await this.dataSource.manager.getRepository(PckgEntity).find({
-      where: {},
-      relations: {
-        pckg_version: true,
-      },
+      where: {}
     });
   }
 
@@ -61,10 +54,11 @@ export class PckgRepository {
     return await this.dataSource.manager.save(pckgEntity);
   }
 
+  
   async deleteEntity(
     pckgEntity: PckgEntity,
     query?: QueryRunner,
-  ): Promise<CreatePckgDto> {
+  ): Promise<PckgEntity> {
     if (query) return await query.manager.remove(pckgEntity);
     return await this.dataSource.manager.remove(pckgEntity);
   }

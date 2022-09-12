@@ -10,8 +10,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateProdPackgVDto } from '../dto/prod-pckg-v/create-prod-packg-v.dto';
 import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
-import { FindProductDto } from '../dto/product/find.product.dto';
-import { ProPckgVerRlEntity } from '../entities/prod-packg-v.entity';
 import { ProdPackgVService } from '../service/prod-packg-v.service';
 
 @ApiTags('packages/prod-pckg-version')
@@ -19,15 +17,17 @@ import { ProdPackgVService } from '../service/prod-packg-v.service';
 export class ProdPackgVController {
   constructor(private readonly prodPackgVService: ProdPackgVService) {}
 
-  @Post(':product_id')
+  @Post('/:product_id/:pckg_version_id')
   async create(
-    @Param() findProductDto: FindProductDto,
+    @Param('product_id') product_id: string,
+    @Param('pckg_version_id') pckg_version_id: string,
     @Body() createProdPackgVDto: CreateProdPackgVDto,
   ) {
-    console.log(createProdPackgVDto);
-
+    const findProductDto = { product_id };
+    const findPckgVersionDto = { pckg_version_id };
     return await this.prodPackgVService.create(
       findProductDto,
+      findPckgVersionDto,
       createProdPackgVDto,
     );
   }
@@ -54,8 +54,9 @@ export class ProdPackgVController {
     );
   }
 
-  @Delete()
-  async delete(@Body() proPckgVerRlEntity: ProPckgVerRlEntity) {
-    return await this.prodPackgVService.delete(proPckgVerRlEntity);
+  @Delete(':prod_pckg_ver_id')
+  async delete(@Param('prod_pckg_ver_id') prod_pckg_ver_id: string) {
+    const findProdPckgVer = { prod_pckg_ver_id };
+    return await this.prodPackgVService.delete(findProdPckgVer);
   }
 }

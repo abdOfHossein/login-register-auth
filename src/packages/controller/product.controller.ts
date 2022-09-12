@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Post,
-  Put
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from '../dto/product/create-product.dto';
@@ -33,12 +33,16 @@ export class ProductController {
   }
 
   @Put(':product_id')
-  update(@Param() findProductDto: FindProductDto,@Body() createProductDto: CreateProductDto) {
+  update(
+    @Param() findProductDto: FindProductDto,
+    @Body() createProductDto: CreateProductDto,
+  ) {
     return this.productService.update(findProductDto, createProductDto);
   }
 
-  @Delete()
-  async delete(@Body() productEntity: ProductEntity) {
+  @Delete(':product_id')
+  async delete(@Param('product_id') product_id: string) {
+    const productEntity={product_id}
     return await this.productService.delete(productEntity);
   }
 }

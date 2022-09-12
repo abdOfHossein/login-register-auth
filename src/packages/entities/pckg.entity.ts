@@ -22,15 +22,7 @@ export class PckgEntity {
   @Column({ nullable: true })
   mobile_support: string;
 
-  //   @Column({ type: 'enum', enum: TypePackage, default: TypePackage.NETWORK })
-  //   typePackage: TypePackage;
-
   @OneToMany((type) => PckgVerRlEntity, (pckg_version) => pckg_version.pckg,)
   pckg_version: PckgVerRlEntity[];
-
-  //   @ManyToOne((type) => GroupPackageEntity, (group_package) => group_package.pkg, {
-  //     primary: false,
-  //   })
-  //   group_package: GroupPackageEntity
 
 }

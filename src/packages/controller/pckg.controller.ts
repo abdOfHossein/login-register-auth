@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePckgDto } from '../dto/pckg/create-pckg.dto';
-import { PckgEntity } from '../entities/pckg.entity';
 import { PckgService } from '../service/pckg.service';
 
 @ApiTags('packages/pckg')
@@ -17,13 +16,9 @@ import { PckgService } from '../service/pckg.service';
 export class PckgController {
   constructor(private readonly pckgService: PckgService) {}
 
-  @Post(':pckg_version_id')
-  async create(
-    @Param('pckg_version_id') pckg_version_id: string,
-    @Body() createPckgDto: CreatePckgDto,
-  ) {
-    const findPckgVersionDto = { pckg_version_id };
-    return await this.pckgService.create(findPckgVersionDto, createPckgDto);
+  @Post()
+  async create(@Body() createPckgDto: CreatePckgDto) {
+    return await this.pckgService.create(createPckgDto);
   }
 
   @Get(':pckg_id')
@@ -46,8 +41,9 @@ export class PckgController {
     return this.pckgService.update(findPckg, createPckgDto);
   }
 
-  @Delete()
-  async delete(@Body() pckgEntity: PckgEntity) {
-    return await this.pckgService.delete(pckgEntity);
+  @Delete(':pckg_id')
+  async delete(@Param('pckg_id') pckg_id: string) {
+    const findProdPckgVer = { pckg_id };
+    return await this.pckgService.delete(findProdPckgVer);
   }
 }

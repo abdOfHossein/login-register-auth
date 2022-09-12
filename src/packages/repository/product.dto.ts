@@ -7,7 +7,7 @@ import { ProductEntity } from '../entities/product.entity';
 export class ProductRepository {
   constructor(
     @InjectRepository(ProductEntity)
-    private productRepo: Repository<ProductEntity>,
+    // private productRepo: Repository<ProductEntity>,
     private dataSource: DataSource,
   ) {}
 
@@ -54,7 +54,7 @@ export class ProductRepository {
   async deleteEntity(
     productEntity: ProductEntity,
     query?: QueryRunner,
-  ): Promise<CreateProductDto> {
+  ): Promise<ProductEntity> {
     if (query) return await query.manager.remove(productEntity);
     return await this.dataSource.manager.remove(productEntity);
   }

@@ -6,6 +6,7 @@ import { CreatePckgDto } from '../dto/pckg/create-pckg.dto';
 import { FindPckgDto } from '../dto/pckg/find.pckg.dto';
 import { PckgVerRlEntity } from '../entities/pckg-version.entity';
 import { PckgEntity } from '../entities/pckg.entity';
+import { VersionEntity } from '../entities/version.entity';
 import { PckgRepository } from '../repository/pckg.repository';
 
 @Injectable()
@@ -17,23 +18,13 @@ export class PckgService {
     private pckgRepository: PckgRepository,
   ) {}
 
-  async create(
-    findPckgVersionDto: FindPckgVersionDto,
-    createPckgDto: CreatePckgDto,
-  ) {
+  async create(createPckgDto: CreatePckgDto) {
     try {
-      const pckg_version: any = await this.dataSource.manager.findOne(
-        PckgVerRlEntity,
-        { where: { id: findPckgVersionDto.pckg_version_id } },
-      );
-      console.log(pckg_version);
+    const version= this.dataSource.manager.create(VersionEntity);
 
-      console.log(pckg_version);
+      const pckg = await this.pckgRepository.createEntity(createPckgDto,version);
+    
 
-      const pckg = await this.pckgRepository.createEntity(
-        createPckgDto,
-        pckg_version,
-      );
       return pckg;
     } catch (e) {
       console.log(e);
@@ -41,13 +32,8 @@ export class PckgService {
     }
   }
 
-  async findOne(
-    findPckgDto: FindPckgDto,
-    options?: Record<string, any>,
-  ): Promise<PckgEntity> {
+  async findOne(findPckgDto: FindPckgDto): Promise<PckgEntity> {
     try {
-      console.log(findPckgDto);
-
       return await this.pckgRepository.findOneEntity(findPckgDto);
     } catch (e) {
       console.log(e);
@@ -64,7 +50,10 @@ export class PckgService {
     }
   }
 
-  async update(findPckgDto: FindPckgDto, createPckgDto: CreatePckgDto) {
+  async update(
+    findPckgDto: FindPckgDto,
+    createPckgDto: CreatePckgDto,
+  ): Promise<PckgEntity> {
     try {
       const pckgEntity = await this.dataSource.manager
         .createQueryBuilder(PckgEntity, 'pckgEntity')
@@ -79,8 +68,12 @@ export class PckgService {
     }
   }
 
-  async delete(pckgEntity: PckgEntity): Promise<CreatePckgDto> {
+  async delete(findPckgDto: FindPckgDto): Promise<PckgEntity> {
     try {
+      const pckgEntity = await this.dataSource.manager
+        .createQueryBuilder(PckgEntity, 'pckgEntity')
+        .where('pckgEntity.id =:id', { id: findPckgDto.pckg_id })
+        .getOne();
       return await this.pckgRepository.deleteEntity(pckgEntity);
     } catch (e) {
       console.log(e);

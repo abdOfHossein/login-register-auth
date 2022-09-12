@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import { FindPckgVersionDto } from '../dto/pckg-version/find.pckg-version.dto';
 import { CreateProdPackgVDto } from '../dto/prod-pckg-v/create-prod-packg-v.dto';
 import { FindProdPckgVerDto } from '../dto/prod-pckg-v/find.prod.pckg.ver.dto';
 import { FindProductDto } from '../dto/product/find.product.dto';
@@ -20,13 +21,14 @@ export class ProdPackgVService {
 
   async create(
     findProductDto: FindProductDto,
+    findPckgVersionDto: FindPckgVersionDto,
     createProdPackgVDto: CreateProdPackgVDto,
   ) {
     try {
-      const product: any = await this.productService.findOne(findProductDto);
       const prodPckgVersionEnt = await this.prodPckgVerRepository.createEntity(
+        findPckgVersionDto,
+        findProductDto,
         createProdPackgVDto,
-        product,
       );
       return prodPckgVersionEnt;
     } catch (e) {
@@ -70,9 +72,9 @@ export class ProdPackgVService {
           id: findProdPckgVerDto.prod_pckg_ver_id,
         })
         .getOne();
-        console.log(prodPckgVer);
-        console.log(createProdPackgVDto);
-        
+      console.log(prodPckgVer);
+      console.log(createProdPackgVDto);
+
       return await this.prodPckgVerRepository.updateEntity(
         prodPckgVer,
         createProdPackgVDto,
@@ -84,10 +86,16 @@ export class ProdPackgVService {
   }
 
   async delete(
-    proPckgVerRlEntity: ProPckgVerRlEntity,
+    findProdPckgVerDto: FindProdPckgVerDto,
   ): Promise<CreateProdPackgVDto> {
     try {
-      return await this.prodPckgVerRepository.deleteEntity(proPckgVerRlEntity);
+      const prodPckgVerEntity = await this.dataSource.manager
+        .createQueryBuilder(ProPckgVerRlEntity, 'proPckgVerRlEntity')
+        .where('proPckgVerRlEntity.id =:id', {
+          id: findProdPckgVerDto.prod_pckg_ver_id,
+        })
+        .getOne();
+      return await this.prodPckgVerRepository.deleteEntity(prodPckgVerEntity);
     } catch (e) {
       console.log(e);
       throw e;

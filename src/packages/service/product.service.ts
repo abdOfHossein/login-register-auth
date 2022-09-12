@@ -51,7 +51,7 @@ export class ProductService {
     createProductDto: CreateProductDto,
   ) {
     try {
-      const product:ProductEntity = await this.dataSource.manager
+      const product: ProductEntity = await this.dataSource.manager
         .createQueryBuilder(ProductEntity, 'productEntity')
         .where('productEntity.id = :id', { id: findProductDto.product_id })
         .getOne();
@@ -66,9 +66,14 @@ export class ProductService {
     }
   }
 
-  async delete(productEntity: ProductEntity): Promise<CreateProductDto> {
+  async delete(findProductDto: FindProductDto): Promise<ProductEntity> {
     try {
+      const productEntity = await this.dataSource.manager
+        .createQueryBuilder(ProductEntity, 'productEntity')
+        .where('productEntity.id =:id', { id: findProductDto.product_id })
+        .getOne();
       return await this.productRepository.deleteEntity(productEntity);
+
     } catch (e) {
       console.log(e);
       throw e;
